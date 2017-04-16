@@ -61,5 +61,20 @@
             <artifactId>mongodb-driver</artifactId>
             <version>3.4.2</version>
         </dependency>
+
+        <!-- player mp3-->
+        <!-- https://mvnrepository.com/artifact/javazoom/jlayer -->
+        <dependency>
+            <groupId>javazoom</groupId>
+            <artifactId>jlayer</artifactId>
+            <version>1.0.1</version>
+        </dependency>
+
+        <!-- qrcode -->
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>javase</artifactId>
+            <version>3.3.0</version>
+        </dependency>
     </dependencies>
 </project>
