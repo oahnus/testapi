@@ -2,10 +2,7 @@ package weixin;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Map;
@@ -15,20 +12,18 @@ import java.util.Map;
  * 10:55.
  */
 public class WxTemplateMessageAPI {
-    // 微信测试公众号
-    public static final String APP_ID = "wx51818aa8a91ca10b";
-    public static final String SECRET = "6ecc7b0fbb7656834863eca9175c2b98";
 
     public static void main(String... args) throws IOException {
-        String accessToken = getWxAccessToken(APP_ID, SECRET);
-        System.out.println("ACCESS_TOKEN=" + accessToken);
-        String templateId = getWxTemplateId(accessToken, "TM00015");
-        System.out.println("TEMPLATE_ID=" + templateId);
+        String accessToken = WxConfig.getWxAccessToken(WxConfig.APP_ID, WxConfig.SECRET);
+System.out.println("ACCESS_TOKEN=" + accessToken);
+
+        boolean result = sendTemplateMessage(accessToken, WxConfig.OPEN_ID, WxConfig.getProperty("ORDER_STATE_TEMPLATE_ID"));
+        System.out.println(result ? "success" : "error");
     }
 
-    public static String getWxTemplateId(String token, String template_id_short) throws IOException {
-        String postUrl = "https://api.weixin.qq.com/cgi-bin/template/api_add_template?" +
-                "access_token=" + token;
+    public static boolean sendTemplateMessage(String token, String openId, String templateId) throws IOException {
+        String json = WxTemplateMessage.getOrderStateJson(openId, templateId, "创建订单成功！", "S00002203", "官费", "200", "请及时支付");
+        String postUrl = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=" + token;
         URL url = new URL(postUrl);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("POST");
@@ -36,12 +31,10 @@ public class WxTemplateMessageAPI {
         connection.setRequestProperty("Content-Type", "application/json;charset=utf-8");
         connection.setRequestProperty("Accept", "application/json");
 
-        OutputStream out = connection.getOutputStream();
-        String json = "{\"template_id_short\":\"TM00015\"}";
-        out.write(json.getBytes());
-        out.flush();
-        out.close();
-
+        try (OutputStream out = connection.getOutputStream()) {
+            out.write(json.getBytes());
+            out.flush();
+        }
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
         StringBuilder stringBuilder = new StringBuilder();
@@ -49,30 +42,9 @@ public class WxTemplateMessageAPI {
         while ((line = reader.readLine()) != null) {
             stringBuilder.append(line);
         }
-        reader.close();
-        ObjectMapper mapper = new ObjectMapper();
-        System.out.println(stringBuilder.toString());
-        Map<String, String> map = mapper.readValue(stringBuilder.toString(), Map.class);
-        return map.get("template_id");
-    }
 
-    public static String getWxAccessToken(String appId, String secret) throws IOException {
-        String tokenUrl = "https://api.weixin.qq.com/cgi-bin/token?" +
-                "grant_type=client_credential&" +
-                "appid=" + appId + "&" +
-                "secret=" + secret;
-        URL url = new URL(tokenUrl);
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("GET");
-        BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-        StringBuilder stringBuilder = new StringBuilder();
-        String line;
-        while ((line = reader.readLine()) != null) {
-            stringBuilder.append(line);
-        }
-        reader.close();
         ObjectMapper mapper = new ObjectMapper();
-        Map<String, String> map = mapper.readValue(stringBuilder.toString(), Map.class);
-        return map.get("access_token");
+        Integer errcode = (Integer) mapper.readValue(stringBuilder.toString(), Map.class).get("errcode");
+        return errcode == 0;
     }
 }
