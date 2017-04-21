@@ -1,11 +1,6 @@
 package weixin;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.Map;
 
 /**
  * Created by oahnus on 2017/4/13
@@ -17,34 +12,20 @@ public class WxTemplateMessageAPI {
         String accessToken = WxConfig.getWxAccessToken(WxConfig.APP_ID, WxConfig.SECRET);
 System.out.println("ACCESS_TOKEN=" + accessToken);
 
-        boolean result = sendTemplateMessage(accessToken, WxConfig.OPEN_ID, WxConfig.getProperty("ORDER_STATE_TEMPLATE_ID"));
-        System.out.println(result ? "success" : "error");
-    }
+//        WxOrderStateTemplate.fillTemplate("订单成功",
+//                "S223333",
+//                "1元注册",
+//                "1688",
+//                "请及时付款")
+//                .send(accessToken);
 
-    public static boolean sendTemplateMessage(String token, String openId, String templateId) throws IOException {
-        String json = WxTemplateMessage.getOrderStateJson(openId, templateId, "创建订单成功！", "S00002203", "官费", "200", "请及时支付");
-        String postUrl = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=" + token;
-        URL url = new URL(postUrl);
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("POST");
-        connection.setDoOutput(true);
-        connection.setRequestProperty("Content-Type", "application/json;charset=utf-8");
-        connection.setRequestProperty("Accept", "application/json");
-
-        try (OutputStream out = connection.getOutputStream()) {
-            out.write(json.getBytes());
-            out.flush();
-        }
-
-        BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-        StringBuilder stringBuilder = new StringBuilder();
-        String line;
-        while ((line = reader.readLine()) != null) {
-            stringBuilder.append(line);
-        }
-
-        ObjectMapper mapper = new ObjectMapper();
-        Integer errcode = (Integer) mapper.readValue(stringBuilder.toString(), Map.class).get("errcode");
-        return errcode == 0;
+        boolean result = WxServiceProcessTemplate.fillTemplate("亲，本月代账进行至票据验收阶段",
+                "北京极限好记有限公司",
+                "代账",
+                "票据验收",
+                "王大锤",
+                "有任何疑问，请致电财务专线：010-88888888")
+                .send(accessToken);
+System.out.println(result ? "success" : "false");
     }
 }
