@@ -1,4 +1,6 @@
-package weixin;
+package weixin.template_message;
+
+import weixin.WxConfig;
 
 import java.io.*;
 

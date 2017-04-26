@@ -1,4 +1,4 @@
-package weixin;
+package weixin.template_message;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

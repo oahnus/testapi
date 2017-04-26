@@ -1,4 +1,4 @@
-package weixin;
+package weixin.template_message;
 
 import lombok.Data;
 

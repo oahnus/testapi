@@ -1,6 +1,7 @@
-package weixin;
+package weixin.user_management;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import weixin.WxConfig;
 
 import java.io.BufferedReader;
 import java.io.IOException;

@@ -1,0 +1,8 @@
+package something_for_test.service_provider_framework;
+
+/**
+ * Created by oahnus on 2017/4/24
+ * 9:13.
+ */
+public interface Service {
+}

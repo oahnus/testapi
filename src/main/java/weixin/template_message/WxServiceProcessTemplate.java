@@ -1,4 +1,6 @@
-package weixin;
+package weixin.template_message;
+
+import weixin.WxConfig;
 
 /**
  * Created by oahnus on 2017/4/21
