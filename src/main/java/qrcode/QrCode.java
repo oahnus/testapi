@@ -3,6 +3,8 @@ package qrcode;
 import com.google.zxing.*;
 import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.client.j2se.MatrixToImageConfig;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
 import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
@@ -10,6 +12,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.HashMap;
 
 /**
@@ -18,7 +21,7 @@ import java.util.HashMap;
  */
 public class QrCode {
     public static void main(String[] args){
-        createQRCodeToPath();
+        createQRCodeToPath("http://blog.oahnus.top", "src/main/resources/qrcode/code.png");
 //        readQRCodeFromImage();
     }
 
@@ -38,11 +41,10 @@ System.out.println(result);
 System.out.println("编码格式:"+result.getBarcodeFormat());
     }
 
-    public static void createQRCodeToPath() {
+    public static void createQRCodeToPath(String content, String targetPath) {
         int width = 400;
         int height = 400;
         String format = "png";
-        String content = "this is a test";
 
         //定义二维码参数
         HashMap hints = new HashMap();
@@ -53,9 +55,15 @@ System.out.println("编码格式:"+result.getBarcodeFormat());
         hints.put(EncodeHintType.MARGIN,2);
 
         //生成二维码
-        int oncolor = 0xFF33CC33;
+        int oncolor = 0xFF000000;
         int offcolor = 0xFFFFFFFF;
         MatrixToImageConfig config = new MatrixToImageConfig(oncolor,offcolor);
-
+        try {
+            BitMatrix bitMatrix = new MultiFormatWriter().encode(content, BarcodeFormat.QR_CODE,width,height,hints);
+            Path path = new File(targetPath).toPath();
+            MatrixToImageWriter.writeToPath(bitMatrix, format, path);
+        } catch (WriterException | IOException e) {
+            e.printStackTrace();
+        }
     }
 }
