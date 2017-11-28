@@ -22,6 +22,25 @@
     </build>
 
     <dependencies>
+        <!--解析Excel-->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>3.14</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>3.14</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml-schemas</artifactId>
+            <version>3.14</version>
+        </dependency>
+
         <!-- flying-saucer generate pdf -->
         <dependency>
             <groupId>org.freemarker</groupId>
@@ -160,6 +179,14 @@
             <artifactId>javase</artifactId>
             <version>3.3.0</version>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.dom4j/dom4j -->
+        <dependency>
+            <groupId>org.dom4j</groupId>
+            <artifactId>dom4j</artifactId>
+            <version>2.1.0</version>
+        </dependency>
+
 
         <!-- common -->
         <!-- https://mvnrepository.com/artifact/commons-io/commons-io -->

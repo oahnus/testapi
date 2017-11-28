@@ -33,11 +33,13 @@ public class JdkEncrypt {
         SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
         //key的长度不能够小于8位字节
         Key secretKey = keyFactory.generateSecret(dks);
-        Cipher cipher = Cipher.getInstance("DES/CBC/PKCS5Padding");
-        IvParameterSpec iv = new IvParameterSpec("12345678".getBytes());
+//        Cipher cipher = Cipher.getInstance("DES/CBC/PKCS5Padding");
+        Cipher cipher = Cipher.getInstance("DES/ECB/PKCS5Padding");
+        IvParameterSpec iv = new IvParameterSpec("qiyewan".getBytes());
         cipher.init(Cipher.ENCRYPT_MODE, secretKey, iv);
         byte[] bytes = cipher.doFinal(clearText.getBytes());
-        return toCipherText(bytes).toUpperCase();
+//        return toCipherText(bytes).toUpperCase();
+        return toCipherText(bytes);
     }
 
     private static String toCipherText(byte[] bytes) {
@@ -52,7 +54,12 @@ public class JdkEncrypt {
         return cipherText.toString();
     }
 
-    public static void main(String... args) {
+    public static void main(String... args) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+        String s = getMD5("'{\"name\":\"test1\",\"card_no\":\"110222198912111234\"}'");
+        System.out.println(s);
 
+        String s1 = new String(Base64.getEncoder().encode(s.getBytes()));
+
+        System.out.println(new String(Base64.getEncoder().encode(s1.getBytes())));
     }
 }
